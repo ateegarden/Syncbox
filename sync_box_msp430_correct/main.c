@@ -5,13 +5,12 @@ Sean McGinnis - 1/31/2024
 This program uses the LP-MSP430FR2476 as a frequency generator for the CANDOR system.
 
 
-UPDATED OUTPUT:
-        30Hz out - P1.0, 1.2, 1.3, 1.6, 2.1, 2.5 (pins 1, 3, 4 on hand and face)
-        60Hz out  - 1.1, 1.7, 2.6, 2.0 (pins 2, 5 on hand and face)
+OUTPUT:
         Sync high - P5.1, P5.2
         Pulse out - P5.0
 
         Unused - 3.5, 3.2 (pin 6 on hand and face)
+
 this update ensures that the same signal comes out of both hand and face pins by #,
 so that if they are accidentally switched it shouldn't matter, as long as the
 person who wires each knows the pin-out format
@@ -88,16 +87,16 @@ int main(void) {
     //setup timerA0, used to generate 120Hz
     TA0CCTL0 |= CCIE;         // TACCR0 interrupt enabled
 
-    //THIS IS JUST FOR TESTING 74 HZ. RETURN COUNT TO 50000 COUNTS TO GET 120HZ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    TA0CCR0 = 40000;    //120Hz <- 74hz for test
-    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //MAKE 40000 COUNTS TO GET 74HZ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    TA0CCR0 = 50000;
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
     TA0CTL |= TASSEL__SMCLK | MC__UP;     // SMCLK, up mode
 
-    //THIS IS JUST FOR TESTING 74 HZ. COMMENT OUT TO RETURN TO 120HZ FRIEND!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    TA0CTL &= ~0x0080;
-    TA0CTL |=  0x0040; //sets clk divider /2, to slow down for 74 hz
+    //THIS IS JUST FOR 74 HZ. COMMENT OUT TO RETURN TO 120HZ FRIEND!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //TA0CTL &= ~0x0080;
+    //TA0CTL |=  0x0040; //sets clk divider /2, to slow down for 74 hz
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     //setup timerA1, used for button debounce
@@ -165,7 +164,7 @@ void __attribute__ ((interrupt(TIMER0_A0_VECTOR))) Timer_A (void)
         p25 = shift30; //pin 4
         p13 = shift30;
 
-        p26 = on60; //on60; //pin 5 on120 is actually 74hz, "on60" will be 37, "on30" 18.5
+        p26 = on60; //on60;
         p20 = on60; //on60;
 
         p35 = on30; //pin 6
